@@ -1,0 +1,196 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath} 
+\usepackage{pdflscape}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepgflibrary{arrows.meta}
+\usetikzlibrary{tikzmark}
+
+\title{Vectors and Functions}
+\author{Airat Galiamov}
+\date{November 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Vector basis}
+
+ \pgfmathsetmacro{\graphsize}{5}
+ \pgfmathsetmacro{\xone}{-.4-\graphsize}
+ \pgfmathsetmacro{\xtwo}{ \xone+2*\graphsize}
+ \pgfmathsetmacro{\yone}{-.4}
+ \pgfmathsetmacro{\ytwo}{\yone+\graphsize}
+
+\begin{tikzpicture}[scale=1]
+    % Draw grid
+    % \draw[step=1,gray,very thin] (\xone,\yone) grid (\xtwo,\ytwo);
+    % Draw axes
+    \coordinate (i_vec) at (1,0);
+    \coordinate (j_vec) at (0,1);
+    \coordinate (e_1_vec) at (0.707,0.707);
+    \coordinate (e_2_vec) at (-0.707,0.707);
+    \coordinate (center) at (0,0);
+    \coordinate (a_vec) at (3.7,2.8);
+    \draw [<->, thick] ($ \graphsize *(i_vec) $) node (xaxis) [above] {$x$}
+        -- (center) node [below left] {$O$}
+        -- ($ \graphsize *(j_vec) $) node (yaxis) [right] {$y$};
+    % Draw i,j basis vectors
+    \coordinate (e_center) at (\graphsize,\graphsize);
+    \draw [<->, very thick] ($ (i_vec) + (e_center) $) node (i_vect) [above right] {$\vec{i}$}
+    -- (e_center)
+    -- ($ (j_vec) + (e_center) $) node (j_vect) [above right] {$\vec{j}$};
+    % Draw e_1, e_2 basis vectors
+    \draw [<->, very thick, blue] ($ (e_1_vec) + (e_center) $) node (e_1_vect) [above] {$\vec{e}_1$}
+    -- (e_center)
+    -- ($ (e_2_vec) + (e_center) $) node (e_2_vect) [above] {$\vec{e}_2$}; 
+    % Draw x' and y'
+    \draw [<->, thick, blue] ($ \graphsize *(e_1_vec) $) node (xpaxis) [above] {$x^\prime$}
+        -- (center)
+        -- ($ \graphsize *(e_2_vec) $) node (ypaxis) [above] {$y^\prime$};
+    \draw [-, blue] (center) -- ($ -1*(e_2_vec) $);
+    % Vector a
+    \draw [->, very thick]  (center) -- (a_vec) node (a) [right] {$\vec{a}$};
+    \coordinate (a_1) at ($(center)!(a_vec)!(i_vec)$);
+    \coordinate (a_2) at ($(center)!(a_vec)!(j_vec)$);
+    \coordinate (a_p_1) at ($(center)!(a_vec)!(e_1_vec)$);
+    \coordinate (a_p_2) at ($(center)!(a_vec)!(e_2_vec)$);
+    \draw [dotted,-{Rectangle[]}] (a_vec) --  (a_1);
+    \draw [dotted,-{Rectangle[]}] (a_vec) -- (a_2);
+    \draw [dotted, blue,-{Rectangle[]}] (a_vec) -- (a_p_1);
+    \draw [dotted, blue,-{Rectangle[]}] (a_vec) -- (a_p_2);
+    \node at (a_1) [below] {$a_x$};
+    \node at (a_2) [left] {$a_y$};
+    \node at (a_p_1) [above left, blue] {$a_1$};
+    \node at (a_p_2) [below left, blue] {$a_2$};
+    
+    \fill[black] (center) circle (2pt);
+    \fill[black] (e_center) circle (1pt);
+
+\end{tikzpicture}
+
+Inner product: $ \vec{a} \cdot \vec{b} = \left< \vec{a}, \vec{b} \right> = \vec{a}^T \cdot \vec{b}$.
+
+Orthonormal basis $\vec{i}, \vec{j}$:
+\begin{align*}
+\left< \vec{i}, \vec{j} \right> = 0 \\
+\left|\vec{i}\right|^2 = 1 \\
+\left|\vec{j}\right|^2 = 1
+\end{align*}
+
+Orthonormal basis $\vec{e}_1,  \vec{e}_2$:
+\begin{align*}
+&\vec{e}_1 = e_{x,1} \cdot \vec{i} + e_{y,1} \cdot \vec{j} =   \begin{bmatrix}  e_{x,1} \\ e_{y,1}\end{bmatrix} \\
+&\vec{e}_2 = e_{x,2} \cdot \vec{i} + e_{y,2} \cdot \vec{j} =   \begin{bmatrix}  e_{x,2} \\ e_{y,2}\end{bmatrix} \\
+\left< \vec{e}_1,  \vec{e}_2 \right>  &= \left[  e_{x,1} \,  e_{y,1} \right] \cdot  \begin{bmatrix}  e_{x,2} \\ e_{y,2}\end{bmatrix} = 
+e_{x,1} \cdot e_{x,2} + e_{y,1} \cdot e_{y,2} = 0  \\
+\left| \vec{e}_n \right| ^2 &= \left< \vec{e}_n,  \vec{e}_n \right> = \left[  e_{x,n} \,  e_{y,n} \right] \cdot  \begin{bmatrix}  e_{x,n} \\ e_{y,n}\end{bmatrix} = 
+e_{x,n}^2 + e_{y,n}^2 = 1
+\end{align*}
+It follows from orthonormality:
+\begin{align} \label{eq:orthonormal}
+    \begin{cases}
+        e_{x,1} = e_{y,2} \\
+        e_{x,2} = -e_{y,1}
+    \end{cases} \textnormal{or} \,
+    \begin{cases}
+        e_{x,1} = -e_{y,2} \\
+        e_{x,2} = e_{y,1}
+    \end{cases}
+\end{align}
+
+
+Example:
+\begin{align*}
+    \vec{e}_1 &= \frac{1}{\sqrt{2}}  \begin{bmatrix} 1 \\ 1\end{bmatrix} \\
+    \vec{e}_2 &= \frac{1}{\sqrt{2}} \begin{bmatrix}  -1 \\ 1\end{bmatrix}
+\end{align*}
+
+Basis expansion - linear combination of basis vectors:
+Example for a given vector $\vec{a}$:
+\begin{align*}
+    \vec{a}  = a_x \cdot \vec{i} + a_y \cdot \vec{j} = \begin{bmatrix}  a_x \\ a_y\end{bmatrix}
+\end{align*}
+Changing basis to $\vec{e}_n$:
+\begin{align*}
+    \vec{a}  &= a_1 \cdot \vec{e}_1 + a_2 \cdot \vec{e_2} = a_1 \cdot  \begin{bmatrix}  e_{x,1} \\ e_{y,1}\end{bmatrix}  + a_2 \cdot  \begin{bmatrix}  e_{x,2} \\ e_{y,2}\end{bmatrix} = \\
+    &=  \begin{bmatrix}  a_1 \cdot e_{x,1} + a_2 \cdot e_{x,2} \\  a_1 \cdot e_{y,1} + a_2 \cdot e_{y,2}\end{bmatrix} = \begin{bmatrix}  a_x \\ a_y\end{bmatrix}\\
+    a_x &= a_1 \cdot e_{x,1} + a_2 \cdot e_{x,2} \\
+    a_y &= a_1 \cdot e_{y,1} + a_2 \cdot e_{y,2} 
+\end{align*}
+Solve to find $a_1$ and $a_2$. Remember in orthonormal basis:
+\begin{align*}
+    a_1 &= \left< \vec{a}, \vec{e}_1 \right> = \left[ a_x \, a_y \right] \cdot \begin{bmatrix}  e_{x,1} \\ e_{y,1}\end{bmatrix} = \\
+     &= a_x \cdot e_{x,1} + a_y \cdot e_{y,1} \\
+    a_2 &= \left< \vec{a}, \vec{e}_2 \right> = \left[ a_x \, a_y \right] \cdot \begin{bmatrix}  e_{x,2} \\ e_{y,2}\end{bmatrix} = \\
+     &= a_x \cdot e_{x,2} + a_y \cdot e_{y,2}
+\end{align*}
+Check it is correct (remember \ref{eq:orthonormal}):
+\begin{align*}
+    a_x &= a_1 \cdot e_{x,1} + a_2 \cdot e_{x,2} = \\
+    &= (a_x \cdot e_{x,1} + a_y \cdot e_{y,1})  \cdot e_{x,1} + (a_x \cdot e_{x,2} + a_y \cdot e_{y,2})   \cdot e_{x,2}  = \\
+    &= a_x \cdot e_{x,1}^2 + a_y \cdot e_{y,1}  \cdot e_{x,1} + a_x \cdot e_{x,2}^2 + a_y \cdot e_{y,2}   \cdot e_{x,2} = \\
+    &= a_x \cdot (e_{x,1}^2 + e_{x,2}^2)  + a_y \cdot  (e_{y,1}  \cdot e_{x,1} + e_{y,2}   \cdot e_{x,2}) = \\
+    &= a_x \\
+    a_y &= ... \\
+\end{align*}
+
+For example vector:
+\begin{align*}
+    &\vec{a} = \begin{bmatrix}
+        37 \\ 28
+    \end{bmatrix} \\
+    &\vec{e}_1 = \frac{1}{\sqrt{2}}  \begin{bmatrix} 1 \\ 1\end{bmatrix}  \textnormal{and} \,
+    \vec{e}_2 = \frac{1}{\sqrt{2}} \begin{bmatrix}  -1 \\ 1\end{bmatrix} \\
+    &a_1 = a_x \cdot e_{x,1} + a_y \cdot e_{y,1} = 37  \frac{1}{\sqrt{2}} + 28  \frac{1}{\sqrt{2}} = 65 \frac{1}{\sqrt{2}} \\
+    &a_2 = a_x \cdot e_{x,2} + a_y \cdot e_{y,2} = - 37  \frac{1}{\sqrt{2}} + 28  \frac{1}{\sqrt{2}} = -9 \frac{1}{\sqrt{2}} \\
+    &\vec{a} = 65 \frac{1}{\sqrt{2}} \cdot \vec{e}_1 - 9 \frac{1}{\sqrt{2}} \vec{e}_2
+\end{align*}
+
+\begin{landscape}
+{\renewcommand{\arraystretch}{2}
+\begin{tabular}{ c | c | c }
+  & Vectors & Complex Functions \\ 
+  \hline
+ Elements & $\vec{a} = \begin{bmatrix}
+ a_x\\
+ a_y\\
+ \vdots\\
+ a_z\end{bmatrix}$ & $\mathbf{F}(x)$ \\  
+ Inner product & $\vec{a} \cdot \vec{b} = \left< \vec{a}, \vec{b} \right> = \vec{a}^T \cdot \vec{b} =  a_x \cdot b_x + \hdots + a_z \cdot b_z  = \sum\limits^{z}_{i=x} a_i \cdot b_i $ & $\left<\mathbf{F}|\mathbf{G}\right> = \int\limits^{\infty}_{-\infty} \mathbf{F} \cdot \mathbf{G}^{*} dx$   \\
+ Linear & $(k\vec{a} + t\vec{b}) \cdot \vec{c} = k (\vec{a} \cdot \vec{c}) + t (\vec{b} \cdot \vec{c}) $  & $\left<k\mathbf{F} + t\mathbf{G}|\mathbf{H}\right> = k\left<\mathbf{F} |\mathbf{H}\right> + t\left<\mathbf{G} |\mathbf{H}\right> $ \\
+ 
+  Orthogonal & $\vec{a}  \perp \vec{b}$ \, if $\vec{a} \cdot \vec{b} = 0 $ &  $\mathbf{F}  \perp \mathbf{G}$ \, if $\left<\mathbf{F}|\mathbf{G}\right> = 0 $ \\
+ Norm$^2$ & $\left| \vec{a} \right| ^2 = \vec{a} \cdot \vec{a} $ &  $\left| \mathbf{F} \right| ^2 = \left<\mathbf{F}|\mathbf{F}\right>$ \\
+ Normalized &  $\left| \vec{a} \right| ^2 = 1$ &$\left| \mathbf{F} \right| ^2 = 1$ \\
+
+ Orthonormal basis  & $\vec{e}_n$; \, $\left|\vec{e}_n\right|^2 =1$; \, $\vec{e}_n \cdot \vec{e}_m = 0$, \, if $n \neq m$  & $\mathbf{\Phi}_n$; \, $\left|\mathbf{\Phi}_n\right|^2 =1$; \, $\left<\mathbf{\Phi}_n | \mathbf{\Phi}_m\right> =0$, \, if $n \neq m$ \\
+ Basis expansion, function series & $\vec{a} = c_1 \vec{e}_1 + \hdots + c_n \vec{e}_n = \sum\limits^{n}_{i=1} c_i \vec{e}_i$ &
+ $\mathbf{F}(x) = c_1 \mathbf{\Phi}_1 + \hdots + c_n \mathbf{\Phi}_n =  \sum\limits^{n}_{i=1} c_i \mathbf{\Phi}_i $
+ \\
+Series coefficients  & 
+$c_i = \vec{a} \cdot \vec{e}_i $ & $c_i = \left<\mathbf{F} | \mathbf{\Phi}_i\right> = \int\limits^{\infty}_{-\infty} \mathbf{F} \cdot \mathbf{\Phi}_i^{*} dx  $
+\\
+&
+$\begin{array}{rll}
+\vec{a} \cdot \vec{e}_i  &= (c_1 \vec{e}_1 + \hdots + c_n \vec{e}_n) \cdot  \vec{e}_i = \\
+&=  c_1 \vec{e}_1 \cdot \vec{e}_i + \hdots + c_i \vec{e}_i \cdot \vec{e}_i  + \hdots + c_n \vec{e}_n  \cdot \vec{e}_i = \\
+&= c_i
+\end{array}$
+&
+$
+\begin{array}{rll}
+\left<\mathbf{F} | \mathbf{\Phi}_i\right> &= \left<(c_1 \mathbf{\Phi}_1 + \hdots + c_n \mathbf{\Phi}_n) | \mathbf{\Phi}_i\right>  = \\
+&= c_1\left<\mathbf{\Phi}_1 | \mathbf{\Phi}_i\right>  + \hdots +c_i\left<\mathbf{\Phi}_i | \mathbf{\Phi}_i\right>  + \hdots c_n\left<\mathbf{\Phi}_n | \mathbf{\Phi}_i\right> = \\
+&= c_i
+\end{array}
+$
+\\
+
+\end{tabular}
+}
+\end{landscape}
+
+
+\end{document}
