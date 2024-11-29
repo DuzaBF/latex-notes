@@ -1,0 +1,171 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath} 
+\usepackage{pdflscape}
+\usepackage{csquotes}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepgflibrary{arrows.meta}
+\usetikzlibrary{tikzmark}
+
+
+\title{Signal Processing}
+\author{Airat Galiamov}
+\date{November 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Fourier transform}
+\subsection{Definitions}
+If $f(t)$ is a function of time, then $F(\omega)$ is its Fourier transform $f(t) \xrightarrow {\mathcal{F}} F(\omega)$ and spectral density if:
+\begin{equation*}
+    F(\omega) = \mathcal{F}(f(t)) = \int \limits^{\infty}_{-\infty} f(t) e^{-i\omega t}dt
+\end{equation*}
+Inverse transform $F(\omega) \xrightarrow{\mathcal{F}^{-1}} f(t)$:
+\begin{equation*}
+    f(t) = \mathcal{F}^{-1}(F(\omega)) = \int \limits^{\infty}_{-\infty} F(\omega) e^{i\omega t}d\omega
+\end{equation*}
+
+\subsection{Properties}
+
+\paragraph{Linearity} Follows from the linearity of the integration:
+\begin{equation*}
+    a f(t) + b g(t) \xrightarrow{\mathcal{F}} a F(\omega) + b G(\omega)
+\end{equation*}
+\paragraph{Scaling} Wider in time - narrower in frequency. Follows from the change of variables:
+\begin{align*}
+    &f(at) \xrightarrow{\mathcal{F}}  \frac{1}{\left| a \right|} F(\frac{\omega}{a})  \\
+    &\int \limits^{\infty}_{-\infty} f(at) e^{-i\omega t}dt = \\
+    & = \left| u = at; \, dt = \frac{1}{a}du; \, \text{change of limits $\rightarrow$ absolute value of $a$ }\right| =\\
+    & = \frac{1}{\left| a \right|} \int \limits^{\infty}_{-\infty} f(u) e^{-i \frac{\omega}{a} u }du =  \\
+    & =\frac{1}{\left| a \right|} F(\frac{\omega}{a})
+\end{align*}
+
+\paragraph{Time shift} Shift in time - phase shift in frequency. Follows from the change of variables:
+\begin{align*}
+    &f(t - t_0) \xrightarrow{\mathcal{F}}  e^{-i\omega t_0} F({\omega})  \\
+    &\int \limits^{\infty}_{-\infty} f(t - t_0) e^{-i\omega t}dt = \left| u=t - t_0 \right| = \\
+    &=\int \limits^{\infty}_{-\infty} f(u) e^{-i\omega u - i \omega t_0}du = \\ 
+    &=e^{- i \omega t_0}\int \limits^{\infty}_{-\infty} f(u) e^{-i\omega u }du =  e^{-i\omega t_0} F({\omega})
+\end{align*}
+
+\paragraph{Differentiation} Derivative in time - multiplication by $i \omega$ in frequency. 
+Useful property for solving differential equations as it transform differential equation into algebraic.
+ Follows from the inverse transform:
+\begin{align*}
+    & \frac{d f(t)}{dt} \xrightarrow{\mathcal{F}} i\omega F({\omega}) \\
+    &\frac{d f(t)}{dt} = \frac{d }{dt} \int \limits^{\infty}_{-\infty} F(\omega) e^{i\omega t}d \omega = \\
+    &=\int \limits^{\infty}_{-\infty}  F(\omega) \frac{d e^{i\omega t}}{dt} d \omega = \\
+    &= \int \limits^{\infty}_{-\infty} \left[ i\omega F(\omega) \right] e^{i\omega t} d \omega \\
+\end{align*}
+
+\paragraph{Convolution} Convolution in time - multiplication in frequency. 
+Useful in working with Linear Time Invariant systems, discretization, optics etc.
+ Effect of the LTI systems is described as a convolution of the input signal with its impulse response.
+ Follows from the changing the order of integration:
+\begin{align*}
+    % TODO proof
+    f(t) * g(t) \xrightarrow{\mathcal{F}} \int \limits^{\infty}_{-\infty} \int \limits^{\infty}_{-\infty} f(\tau ) g(t - \tau) d \tau e^{-i\omega t}dt = 
+\end{align*}
+
+\paragraph{Symmetry} Follows from the definitions:
+\begin{align*}
+    &f(t) \xrightarrow{\mathcal{F}} F(\omega) \\
+    &F(t) \xrightarrow{\mathcal{F}} f(\omega)
+    % TODO proof
+\end{align*}
+
+\paragraph{Multiplication} Multiplication in time - convolution in frequency. Follows from the symmetry:
+\begin{align*}
+    f(t)g(t) \xrightarrow{\mathcal{F}} F(\omega) * G(\omega)
+    % TODO proof
+\end{align*}
+
+\paragraph{Integration} Reverse of the differentiation. 
+The term with Dirac delta function takes care of the constant of integration with a constant in time part of the function.
+\begin{align*}
+    \int \limits^{t}_{-\infty}f(\tau)d \tau \xrightarrow{\mathcal{F}} \frac{F(\omega)}{i \omega} + \frac{1}{2}F(0)\delta(t)
+    % TODO proof
+\end{align*}
+
+\paragraph{Modulation} Multiplication with a sine wave in time - shift in frequency. Basis of AM modulation.
+Follows from the time-shift and symmetry:
+\begin{align*}
+    e^{i \omega_0 t}f(t) \xrightarrow{\mathcal{F}} F(\omega - \omega_0)
+    % TODO proof
+\end{align*}
+
+\paragraph{Conjugate signal}
+\begin{align*}
+   f^*(t) \xrightarrow{\mathcal{F}} F^{*}(-\omega)
+    % TODO proof
+\end{align*}
+
+\subsection{Important functions}
+
+\paragraph{Dirac delta function}
+
+\paragraph{sin and cos}
+
+\paragraph{rect}
+
+\paragraph{sinc}
+
+\paragraph{Grid of delta functions}
+
+
+\subsection{Fourier series}
+Functions $e^{i n \omega t}$ for $n \in \mathbb{Z}$ form an orthonormal basis in Hilbert space.
+So Fourier transform is a basis expansion of a $f(t)$ function.
+And in Fourier series coefficients are the inner products of a $f(t)$ with basis functions.
+Fourier series expansion is:
+\begin{align*}
+    &f(t) = \sum \limits^{\infty}_{n=- \infty} c_n e^{i n \omega t}, \, \text{where} \\
+    &c_n = \left< f(t), e^{i n \omega t} \right> = \int \limits^{\infty}_{-\infty} f(t) e^{-i n \omega t}dt
+\end{align*}
+
+
+\section{Nyquist-Shannon-Kotelnikov theorem}
+
+Paraphrased from \cite{nyquist_certain_1928,shannon_communication_1949,kotelnikov_transmission_2006}:
+\begin{displayquote}
+Any function $f(t)$ consisting of frequencies from $0$ to $f_1$ (band-limited) can be 
+reconstructed with arbitrary accuracy from discrete samples at intervals of no higher than $\frac{1}{2f_1}$.
+\end{displayquote}
+
+\section{Signal energy}
+% TODO:
+Factor of $\frac{1}{2 \pi}$ is required for the normalization and holding of Plancherel's theorem for energy relation.
+
+
+\section{Definitions}
+Complex numbers:
+\begin{align*}
+    &z = a + ib = r e^{i\phi} \\
+    &z^* = a - ib \\
+    &\left| z \right| ^2 = z z^* = a^2 + b^2
+\end{align*}
+Inner product of complex functions:
+\begin{equation*}
+    \left< f(t),g(t) \right> = \int \limits^{\infty}_{-\infty} f(t) g^{*}(t) dx
+\end{equation*}
+Convolution:
+\begin{equation*}
+f(t) * g(t) =  \int \limits^{\infty}_{-\infty} f(\tau ) g(t - \tau) d \tau
+\end{equation*}
+Dirac delta function:
+\begin{equation*}
+    \delta(t) =  \begin{cases}
+        \infty, \, \text{if $t = 0$};\\
+        0, \, \text{otherwise}
+    \end{cases}
+\end{equation*}
+% TODO: Dirac function properties, Dirac grid etc.
+
+\bibliographystyle{IEEEtran}
+\bibliography{signal_processing}
+
+\end{document}
