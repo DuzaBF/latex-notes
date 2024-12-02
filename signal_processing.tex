@@ -22,11 +22,11 @@
 \subsection{Definitions}
 If $f(t)$ is a function of time, then $F(\omega)$ is its Fourier transform $f(t) \xrightarrow {\mathcal{F}} F(\omega)$ and spectral density if:
 \begin{equation*}
-    F(\omega) = \mathcal{F}(f(t)) = \int \limits^{\infty}_{-\infty} f(t) e^{-i\omega t}dt
+    F(\omega) = \mathcal{F}[f(t)] = \int \limits^{\infty}_{-\infty} f(t) e^{-i\omega t}dt
 \end{equation*}
 Inverse transform $F(\omega) \xrightarrow{\mathcal{F}^{-1}} f(t)$:
 \begin{equation*}
-    f(t) = \mathcal{F}^{-1}(F(\omega)) = \int \limits^{\infty}_{-\infty} F(\omega) e^{i\omega t}d\omega
+    f(t) = \mathcal{F}^{-1}[F(\omega)] = \int \limits^{\infty}_{-\infty} F(\omega) e^{i\omega t}d\omega
 \end{equation*}
 
 \subsection{Properties}
@@ -75,7 +75,7 @@ Useful in working with Linear Time Invariant systems, discretization, optics etc
 \paragraph{Symmetry} Follows from the definitions of the transform and it's inverse:
 \begin{align*}
     &f(t) \xrightarrow{\mathcal{F}} F(\omega) \\
-    &F(t) \xrightarrow{\mathcal{F}} f(\omega)
+    &F(t) \xrightarrow{\mathcal{F}} f(-\omega)
     % TODO proof
 \end{align*}
 
@@ -88,7 +88,7 @@ Useful in working with Linear Time Invariant systems, discretization, optics etc
 \paragraph{Integration} Reverse of the differentiation. 
 The term with Dirac delta function takes care of the constant of integration with a constant in time part of the function.
 \begin{align*}
-    \int \limits^{t}_{-\infty}f(\tau)d \tau \xrightarrow{\mathcal{F}} \frac{F(\omega)}{i \omega} + \frac{1}{2}F(0)\delta(t)
+    \int \limits^{t}_{-\infty}f(\tau)d \tau \xrightarrow{\mathcal{F}} \frac{F(\omega)}{i \omega} + \frac{1}{2}F(0)\delta(\omega)
     % TODO proof
 \end{align*}
 
@@ -180,8 +180,6 @@ Inverse Fourier transform of Dirac delta function on frequency:
     \int \limits^{\infty}_{-\infty} \delta(\omega-\omega_0) e^{i \omega t} d\omega = e^{i \omega_0 t}
 \end{align*}
 
-
-
 \paragraph{sin and cos}
 Using Euler's formula $sin(\omega_0 t)$ and $cos(\omega_0 t)$ can be represented as a sum of complex exponential functions:
 \begin{align*}
@@ -244,11 +242,71 @@ From these and properties of Dirac delta function the Fourier transforms of $sin
 
 \paragraph{Heaviside step function}
 
-\paragraph{rect}
+Heaviside step function is defined as:
+\begin{equation*}
+    H(t) = \begin{cases}
+        0, \, \text{if} \, t<0 \\
+        1, \, \text{overwise}
+    \end{cases} 
+\end{equation*}
+Also step function is an integral (antiderivative) of the Dirac delta function:
+\begin{equation*}
+    H(t) = \int \limits^{t}_{-\infty} \delta (\tau) d\tau
+\end{equation*}
+Fourier transform of the step function follows from its link 
+to the Dirac delta function and integration property of the transform:
+\begin{equation*}
+    H(t)  \xrightarrow{\mathcal{F}} \frac{1}{i\omega } + \frac{1}{2} \delta (\omega)
+\end{equation*}
 
-\paragraph{sinc}
+\paragraph{rect} Rectangular function is defined as:
+\begin{equation*}
+    rect(t) = \begin{cases}
+        0, \, \text{if} \, |t| > \frac{1}{2} \\
+        1, \, \text{if} \, |t| \le \frac{1}{2} \\
+    \end{cases} 
+\end{equation*}
+Rectangular function is also a combination of Heaviside step functions:
+\begin{equation*}
+    rect(t) = H(t+\frac{1}{2}) - H(t - \frac{1}{2})
+\end{equation*}
+Fourier transform of the rectangular function is a $sinc$ functions:
+\begin{align*}
+    rect(t) &\xrightarrow{\mathcal{F}} \frac{sin(\frac{\omega}{2})}{\frac{\omega}{2}} = sinc(\frac{\omega}{2}) \\
+    \mathcal{F}[rect(t)] &=  \int \limits^{\infty}_{-\infty} rect(t) e^{-i \omega t}dt = \int \limits^{\frac{1}{2}}_{-\frac{1}{2}} 1 e^{-i \omega t}dt = \\
+    &= \frac{1}{- i \omega}e^{-i \omega t} \Big|^{\frac{1}{2}}_{-\frac{1}{2}} = 
+    \frac{e^{i\frac{\omega}{2}} - e^{-i\frac{\omega}{2}}}{2 i \frac{\omega}{2}} = \frac{\sin(\frac{\omega}{2})}{ \frac{\omega}{2}} = sinc(\frac{\omega}{2}) \\
+    &\text{also} \,\\
+    \frac{1}{2} rect(\frac{t}{2}) &\xrightarrow{\mathcal{F}} sinc(\omega)
+    % \mathcal{F}(rect(t)) &= \mathcal{F}(H(t+\frac{1}{2}) - H(t - \frac{1}{2})) = \\
+    % &=\frac{e^{i\omega \frac{1}{2}}}{i\omega } + \frac{e^{i\omega \frac{1}{2}}}{2} \delta (\omega) -
+    % \frac{e^{-i\omega \frac{1}{2}}}{ i\omega } - \frac{e^{-i\omega \frac{1}{2}}}{2} \delta (\omega) = \\
+    % &= \frac{e^{i\frac{\omega}{2}} - e^{-i\frac{\omega}{2}}}{2 i \frac{\omega}{2}} + \frac{e^{i\frac{\omega}{2}} - e^{-i\frac{\omega}{2}}}{2} \delta (\omega) = \\
+    % &= \frac{\sin(\frac{\omega}{2})}{ \frac{\omega}{2}} + \frac{e^{i\frac{\omega}{2}} - e^{-i\frac{\omega}{2}}}{2} \delta (\omega)
+\end{align*}
 
-\paragraph{Grid of delta functions}
+\paragraph{sinc} sinc function is defined as:
+\begin{equation*}
+    sinc(t) = \begin{cases}
+        \frac{\sin(t)}{t}, \, \text{if} \, t \ne 0 \\
+        1, \, \text{if} \, t = 0\
+    \end{cases} 
+\end{equation*}
+Fourier transform of the sinc function os a rectangular function, which follows from the symmetry of the transform:
+\begin{align*}
+    sinc(t) &\xrightarrow{\mathcal{F}} \frac{1}{2} rect(\frac{\omega}{2}) 
+\end{align*}
+
+\paragraph{Dirac comb} Dirac comb is a function with periodic delta impulses. 
+Multiplication of some function with the train performs a discrete sampling of the function.
+\begin{align*}
+    \delta_{T}(t) = \sum \limits^{\infty}_{n = -\infty} \delta(t - nT)
+\end{align*}
+Fourier transform of the Dirac comb is a Dirac comb:
+\begin{align*}
+    \delta_{T}(t) &\xrightarrow{\mathcal{F}} \frac{2\pi}{T} \delta_{\frac{2 \pi}{T}}(\omega) \\
+    % TODO proof
+\end{align*}
 
 \section{Nyquist-Shannon-Kotelnikov theorem}
 
@@ -257,6 +315,39 @@ Paraphrased from \cite{nyquist_certain_1928,shannon_communication_1949,kotelniko
 Any function $f(t)$ consisting of frequencies from $0$ to $f_1$ (band-limited) can be 
 reconstructed with arbitrary accuracy from discrete samples at intervals of no higher than $\frac{1}{2f_1}$.
 \end{displayquote}
+
+Aliasing is an effect in discrete signals when frequencies of the initial continuous signal higher than twice the sampling frequency
+get shifted to the lower frequency after sampling and change the signal.
+
+Let $f(t)$ be band limited continuous signal with its spectra $F(\omega)$ and the highest frequency in its spectra $f_1$. 
+Time signal $f(t)$ is purely real, meaning frequency spectra $F(\omega)$ is even.
+
+
+
+Let $s(t)$ be the $f(t)$ signal sampled with a period $T$, sampling frequency $f_s = \frac{1}{T}$
+ and angular sampling frequency $\omega_s = \frac{2 \pi }{T}$.
+ Then the $s(t)$ is the multiplication of the $f(t)$ and the Dirac comb:
+ \begin{equation*}
+    s(t) = f(t) \delta_{T}(t)
+ \end{equation*}
+ Multiplication in time domain is a convolution in frequency domain.
+ Convolving with a Dirac delta impulse shifts the function to the shift if teh Dirac impulse.
+ \begin{align*}
+    \mathcal{F}[s(t)] &= \mathcal{F}[f(t) \delta_{T}(t)] = F(\omega) * \omega_s \delta_{\omega_s}(\omega) = \\
+    &=\sum \limits^{\infty}_{n = -\infty} \omega_s F(\omega - n \omega_s)
+ \end{align*}
+
+ If $f_1$ is greater than $f_s$ then adjacent copies of spectra will overlap and change and initial information about 
+ the spectra will be lost.
+
+ Continuous signal - continuous spectra.
+ Discrete signal - periodic spectra.
+ Reconstruction of the signal from it samples - cutting out one period of the spectra.
+ Cutting out one spectra is multiplying spectra with rectangular function $rect(\frac{\omega}{\omega_s})$ with a width of $2\omega_s$.
+ Multiplying with $rect$ in frequency domain - convolving with $sinc$ in time domain.
+ Sampled signal in time domain is a train of weighted delta impulses. Convolving with $sinc$ makes every impulse into shifted and scaled $sinc$.
+ Sum of these $sinc$'s will reconstruct continuous signal perfectly.
+
 
 \section{Signal energy}
 % TODO:
@@ -285,16 +376,6 @@ Dirac delta function:
         0, \, \text{otherwise}
     \end{cases}
 \end{equation*}
-
-\subsection{Fourier series}
-Functions $e^{i n \omega t}$ for $n \in \mathbb{Z}$ form an orthonormal basis in Hilbert space.
-So Fourier transform is a basis expansion of a $f(t)$ function.
-And in Fourier series coefficients are the inner products of a $f(t)$ with basis functions.
-Fourier series expansion is:
-\begin{align*}
-    &f(t) = \sum \limits^{\infty}_{n=- \infty} c_n e^{i n \omega t}, \, \text{where} \\
-    &c_n = \left< f(t), e^{i n \omega t} \right> = \int \limits^{\infty}_{-\infty} f(t) e^{-i n \omega t}dt
-\end{align*}
 
 \bibliographystyle{IEEEtran}
 \bibliography{signal_processing}
